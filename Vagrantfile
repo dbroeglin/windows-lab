@@ -1,29 +1,41 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$BASE_BOX = "eval-win2012r2-standard-ssh-nocm-1.0.4"
+$BASE_BOX = "eval-win2012r2-standard-nocm-1.0.4"
+#$BASE_BOX = "eval-win10x64-enterprise-ssh-nocm-1.0.4"
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
 #    vb.gui = false
+     vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
   end
 
-  config.vm.define "dc" do |config|
+  config.vm.define "dc01" do |config|
     config.vm.box = $BASE_BOX
-    config.vm.hostname = 'dc'
+    config.vm.hostname = 'dc01'
 
-    config.vm.network "private_network", ip: "192.168.100.10", mac: "080027000010"
+    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.50"
 
     config.vm.provision "shell", path: "provision/00_admin_password.ps1"
     config.vm.provision "shell", path: "provision/01_install_AD.ps1"
     config.vm.provision "shell", path: "provision/02_install_forest.ps1"
     config.vm.provision "shell", path: "provision/03_install_adfs.ps1"
+    config.vm.provision "shell", path: "provision/04_populate_AD.ps1"
+
+    config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
   end
 
-  config.vm.define "client" do |config|
+  config.vm.define "web01" do |config|
     config.vm.box = $BASE_BOX
-    config.vm.hostname = 'client'
+    config.vm.hostname = 'web01'
 
-    config.vm.network "private_network", ip: "192.168.100.11", mac: "080027000011"
-    config.vm.provision "shell", path: "provision/06_client_setup.ps1"
+    # fixing mac address to identify the interface later while provisioning
+    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.51", mac: "080027000051"
+    
+    # TODO: could be done based on the IP with Get-Net... -Ipv4Address ...
+    config.vm.provision "shell", path: "provision/06_join_domain.ps1", \
+        args: ["08-00-27-00-00-51", "172.16.124.50"]
+    config.vm.provision "shell", path: "provision/07_install_iis.ps1"
+
+    config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
   end
 end
