@@ -8,9 +8,9 @@ $ErrorActionPreference = "Stop"
 $Start = get-date
  
 ### Variables
-$CertificateADFSsubject = "adfs.broeglin.fr"
+$CertificateADFSsubject = "adfs.lab.local"
 $ADFSdisplayName = "Kloud Showcase ADFS 2"
-$ADFSuser = "broeglin\ADFSfarm2012R2"
+$ADFSuser = "LAB\ADFSfarm2012R2"
 $CertificateLocalPath = "C:\Certificates\"
 #$CertificateRemotePath = "\\dc01.kloud.internal\certificates\"
 $CertificateRemotePath = $CertificateLocalPath
