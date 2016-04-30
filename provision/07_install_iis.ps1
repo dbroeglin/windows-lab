@@ -1,4 +1,10 @@
-Set-StrictMode -Version Latest 
+Param(
+    $Domain                    = "lab.local",
+    $IISServiceAccountUsername = "iis_svc",
+    $IISServiceAccountPassword = "Passw0rd",
+    $fqdn    = "www.lab.local"
+)
+Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 Import-Module ServerManager 
@@ -19,7 +25,6 @@ Import-Module WebAdministration
 #cmd.exe /c $Command
 
 $websiteRoot = "c:\Inetpub\WWWRoot"
-$fqdn    = "www.lab.local"
 
 $webRoot = Join-Path $websiteRoot $fqdn
 mkdir $webRoot 
@@ -32,8 +37,8 @@ $appPool = New-WebAppPool -Name "$($fqdn)_pool"
 #$appPool.processModel.password = ""
 
 $appPool.processModel.identityType = 3 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
-$appPool.processModel.userName = "iis_srv"
-$appPool.processModel.password = "Passw0rd"
+$appPool.processModel.userName = $IISServiceAccountUsername 
+$appPool.processModel.password = $IISServiceAccountPassword 
 
 $appPool | Set-Item
 
@@ -50,4 +55,4 @@ Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/w
 Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/anonymousAuthentication `
             -name enabled -value false -location $fqdn
             
-setspn -S http/www.lab.local iis_srv
+setspn -S http/$fqdn $IISServiceAccountUsername
