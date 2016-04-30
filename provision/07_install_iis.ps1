@@ -27,9 +27,14 @@ mkdir $webRoot
 $appPool = New-WebAppPool -Name "$($fqdn)_pool"
 
 # http://www.iis.net/configreference/system.applicationhost/applicationpools/add/processmodel
-$appPool.processModel.identityType = 0 # 0: LocalSystem, 1: localservice: 
-$appPool.processModel.userName = "LocalSystem"
+#$appPool.processModel.identityType = 0 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
+#$appPool.processModel.userName = "LocalSystem"
 #$appPool.processModel.password = ""
+
+$appPool.processModel.identityType = 0 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
+$appPool.processModel.userName = "iis_srv"
+$appPool.processModel.password = "Passw0rd"
+
 $appPool | Set-Item
 
 
