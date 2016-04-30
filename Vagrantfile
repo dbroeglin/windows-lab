@@ -28,12 +28,10 @@ Vagrant.configure(2) do |config|
     config.vm.box = $BASE_BOX
     config.vm.hostname = 'web01'
 
-    # fixing mac address to identify the interface later while provisioning
-    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.51", mac: "080027000051"
+    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.51"
     
-    # TODO: could be done based on the IP with Get-Net... -Ipv4Address ...
     config.vm.provision "shell", path: "provision/06_join_domain.ps1", \
-        args: ["08-00-27-00-00-51", "172.16.124.50"]
+        args: ["172.16.124.*", "172.16.124.50"]
     config.vm.provision "shell", path: "provision/07_install_iis.ps1"
 
     config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
