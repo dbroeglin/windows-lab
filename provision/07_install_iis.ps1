@@ -31,7 +31,7 @@ $appPool = New-WebAppPool -Name "$($fqdn)_pool"
 #$appPool.processModel.userName = "LocalSystem"
 #$appPool.processModel.password = ""
 
-$appPool.processModel.identityType = 0 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
+$appPool.processModel.identityType = 3 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
 $appPool.processModel.userName = "iis_srv"
 $appPool.processModel.password = "Passw0rd"
 
@@ -50,4 +50,4 @@ Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/w
 Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/anonymousAuthentication `
             -name enabled -value false -location $fqdn
             
-setspn -S http/www.lab.local web01
+setspn -S http/www.lab.local iis_srv

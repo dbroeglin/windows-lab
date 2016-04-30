@@ -5,8 +5,10 @@ Param(
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"
 
+
+# Ensure we use only the DNS server at $DNSServerIP
 Set-DnsClientServerAddress -InterfaceIndex (
-        (Get-NetIPAddress -IPAddress $LabIPAddressPattern).InterfaceIndex
+        (Get-NetIPAddress).InterfaceIndex
     ) -ServerAddress $DNSServerIP
 
 $Domain = "lab.local"
