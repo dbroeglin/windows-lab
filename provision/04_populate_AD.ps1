@@ -4,7 +4,7 @@ New-ADUser -Name "Dominique Broeglin" -GivenName Dominique -Surname Broeglin `
      -PassThru | Enable-ADAccount
 
 New-ADUser -Name "IIS Service Account"  `
-     -SamAccountName iis_srv -UserPrincipalName iis_srv@lab.local `
+     -SamAccountName iis_svc -UserPrincipalName iis_svc@lab.local `
      -AccountPassword (convertto-securestring "Passw0rd" -asplaintext -force) `
      -PassThru | Enable-ADAccount
 
