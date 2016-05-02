@@ -1,17 +1,14 @@
 Param(
     $LabIPAddressPattern,
     $DNSServerIP,
-    $VagrantIPAddressPattern = "10.0.*",
     $Domain = "lab.local"
 )
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"
 
-# Do not publish IPs that are not part of the lab
-Get-NetIPConfiguration -InterfaceIndex (Get-NetIPAddress -IPAddress $VagrantIPAddressPattern).InterfaceIndex |
-    Get-NetConnectionProfile |
-    Where IPv4Connectivity -ne "NoTraffic" |
-    Set-DnsClient -RegisterThisConnectionsAddress:$false -Verbose
+# Rename Lab Interface
+Get-NetAdapter -InterfaceIndex (Get-NetIPAddress -IPAddress $LabIPAddressPattern).InterfaceIndex | 
+    Rename-NetAdapter -NewName Lab
 
 # Ensure we use only the DNS server at $DNSServerIP
 Set-DnsClientServerAddress -InterfaceIndex (

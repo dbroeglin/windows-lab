@@ -1,8 +1,8 @@
 Param(
     $Domain                    = "lab.local",
-    $IISServiceAccountUsername = "iis_svc",
+    $IISServiceAccountUsername = "LAB\iis_svc",
     $IISServiceAccountPassword = "Passw0rd",
-    $fqdn    = "www.lab.local"
+    $fqdn                      = "www.lab.local"
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -25,6 +25,9 @@ Import-Module WebAdministration
 #cmd.exe /c $Command
 
 $websiteRoot = "c:\Inetpub\WWWRoot"
+
+# Remove default web site:
+Remove-Item 'IIS:\Sites\Default Web Site' -Confirm:$false -Recurse
 
 $webRoot = Join-Path $websiteRoot $fqdn
 mkdir $webRoot 
@@ -50,9 +53,11 @@ $website = New-Website -Name $fqdn `
                        
 "Hello World!" | Out-File "$webRoot\index.html"
 
-Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/windowsAuthentication `
-            -name enabled -value true -location $fqdn
-Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/anonymousAuthentication `
-            -name enabled -value false -location $fqdn
+Set-WebConfigurationProperty -Filter /system.WebServer/security/authentication/anonymousAuthentication `
+    -Name enabled -Value $false -Location $fqdn
+Set-WebConfigurationProperty -Filter /system.WebServer/security/authentication/windowsAuthentication `
+    -Name enabled -Value $true -Location $fqdn
+Set-WebConfigurationProperty -Filter /system.webServer/security/authentication/windowsAuthentication `
+    -Name useAppPoolCredentials -Value $true -Location $fqdn            
             
 setspn -S http/$fqdn $IISServiceAccountUsername

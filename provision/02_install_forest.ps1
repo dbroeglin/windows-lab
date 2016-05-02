@@ -1,8 +1,9 @@
+Param(
+    $domainname = "lab.local"
+    $netbiosName = "LAB"     
+)
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"
-
-$domainname = "lab.local"
-$netbiosName = "LAB" 
 
 Import-Module ADDSDeployment 
 Install-ADDSForest -CreateDnsDelegation:$false `
