@@ -1,5 +1,5 @@
 Param(
-    $domainname = "lab.local"
+    $domainname = "lab.local",
     $netbiosName = "LAB"     
 )
 Set-StrictMode -Version Latest 

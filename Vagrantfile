@@ -47,6 +47,7 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", path: "provision/00_common.ps1"
     config.vm.provision "shell", path: "provision/06_join_domain.ps1", \
         args: ["172.16.124.*", "172.16.124.50"]
+    config.vm.provision "shell", path: "provision/08_client.ps1"
 
     config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
   end
