@@ -12,3 +12,10 @@ Mkdir c:\vagrant\test\ -Force
     dir Cert:\LocalMachine\My | ? { $_.Subject -match $Fqdn } |
         Export-PfxCertificate -FilePath c:\vagrant\test\$Fqdn.pfx -Password $password    
 }
+
+# Works only on W2016:
+#New-SelfSignedCertificate -certstorelocation cert:\localmachine\my `
+#        -dnsname sts.extlab.local -KeySpec KeyExchange 
+
+#dir Cert:\LocalMachine\My | ? { $_.Subject -match "sts.extlab.local" } |
+#    Export-PfxCertificate -FilePath c:\vagrant\test\sts.extlab.local.pfx -Password $password    

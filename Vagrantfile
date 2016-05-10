@@ -18,8 +18,8 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", path: "provision/00_common.ps1"
     config.vm.provision "shell", path: "provision/01_install_AD.ps1"
     config.vm.provision "shell", path: "provision/02_install_forest.ps1"
-    config.vm.provision "shell", path: "provision/03_install_adfs.ps1"
-    config.vm.provision "shell", path: "provision/04_populate_AD.ps1"
+    config.vm.provision "shell", path: "provision/03_populate_AD.ps1"
+    config.vm.provision "shell", path: "provision/04_install_adfs.ps1"
 
     config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
   end

@@ -1,3 +1,7 @@
+Start-Sleep 30
+
+Add-ADGroupMember -Identity "Domain Admins" -Members "vagrant"
+
 # Client User
 Write-Host "Creating Dom Account..."
 New-ADUser -Name "Dominique Broeglin" -GivenName Dominique -Surname Broeglin `
@@ -37,8 +41,21 @@ Get-ADUser $User | Set-ADUser -Enabled $True -Replace @{
 Write-Host "Netscaler Account created:"
 Get-ADUser ns_svc -Properties TrustedForDelegation,TrustedToAuthForDelegation,"msDS-AllowedToDelegateTo",ServicePrincipalNames
 
+# ADFS service account and DNS entry 
+Write-Host "Creating ADFS Account..."
+New-ADUser -Name "ADFS Service Account" `
+     -SamAccountName adfs_svc -UserPrincipalName adfs_svc@lab.local `
+     -AccountPassword (convertto-securestring "Passw0rd" -asplaintext -force) `
+     -PasswordNeverExpires $True `
+     -PassThru | Enable-ADAccount
+
+Write-Host "ADFS Account created:"
+Get-ADUser adfs_svc -Properties TrustedForDelegation,TrustedToAuthForDelegation,"msDS-AllowedToDelegateTo",ServicePrincipalNames
+Add-ADGroupMember -Identity "Domain Admins" -Members "adfs_svc"
+
 # Setup an external domain name
-Add-DnsServerPrimaryZone -Name "extlab.local" -ReplicationScope "Forest"
+Get-DnsServerDiagnostics
+Add-DnsServerPrimaryZone -Name "extlab.local" -ReplicationScope "Domain"
 
 # External website name
 Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name www -IPv4Address 172.16.124.12
@@ -46,4 +63,5 @@ Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name www -IPv4Address 172
 # External aaa name
 Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name aaa -IPv4Address 172.16.124.13
 
-
+# ADFS name
+Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name sts -IPv4Address 172.16.124.51 # dc01 for now
