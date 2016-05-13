@@ -7,6 +7,7 @@ Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
 #    vb.gui = false
      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+     #vb.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
   config.vm.define "dc01" do |config|
@@ -19,6 +20,7 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", path: "provision/01_install_AD.ps1"
     config.vm.provision "shell", path: "provision/02_install_forest.ps1"
     config.vm.provision "shell", path: "provision/03_populate_AD.ps1"
+    config.vm.provision "shell", path: "provision/03_populate_AD2.ps1"
     config.vm.provision "shell", path: "provision/04_install_adfs.ps1"
 
     config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"

@@ -52,16 +52,3 @@ New-ADUser -Name "ADFS Service Account" `
 Write-Host "ADFS Account created:"
 Get-ADUser adfs_svc -Properties TrustedForDelegation,TrustedToAuthForDelegation,"msDS-AllowedToDelegateTo",ServicePrincipalNames
 Add-ADGroupMember -Identity "Domain Admins" -Members "adfs_svc"
-
-# Setup an external domain name
-Get-DnsServerDiagnostics
-Add-DnsServerPrimaryZone -Name "extlab.local" -ReplicationScope "Domain"
-
-# External website name
-Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name www -IPv4Address 172.16.124.12
-
-# External aaa name
-Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name aaa -IPv4Address 172.16.124.13
-
-# ADFS name
-Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name sts -IPv4Address 172.16.124.51 # dc01 for now
