@@ -2,11 +2,12 @@ Param(
     $Domain                    = "lab.local",
     $IISServiceAccountUsername = "LAB\iis_svc",
     $IISServiceAccountPassword = "Passw0rd",
-    $fqdn                      = "www.lab.local"
+    $Fqdn                      = "www.lab.local"
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+Write-Host "Installing IIS..."
 Import-Module ServerManager 
 
 Install-WindowsFeature Web-Server
@@ -16,48 +17,35 @@ Install-WindowsFeature Web-Windows-Auth
 
 Import-Module WebAdministration
 
-# --------------------------------------------------------------------
-# Setting directory access
-# --------------------------------------------------------------------
-#$Command = "icacls $InetPubWWWRoot /grant BUILTIN\IIS_IUSRS:(OI)(CI)(RX) BUILTIN\Users:(OI)(CI)(RX)"
-#cmd.exe /c $Command
-#$Command = "icacls $InetPubLog /grant ""NT SERVICE\TrustedInstaller"":(OI)(CI)(F)"
-#cmd.exe /c $Command
-
-$websiteRoot = "c:\Inetpub\WWWRoot"
+$WebsiteRoot = "c:\Inetpub\WWWRoot"
 
 # Remove default web site:
 Remove-Item 'IIS:\Sites\Default Web Site' -Confirm:$false -Recurse
 
-$webRoot = Join-Path $websiteRoot $fqdn
-mkdir $webRoot 
+$WebRoot = Join-Path $WebsiteRoot $Fqdn
+mkdir $WebRoot 
 
-$appPool = New-WebAppPool -Name "$($fqdn)_pool"
+Write-Host "Creating AppPool..."
+$appPool = New-WebAppPool -Name "$($Fqdn)_pool"
 
 # http://www.iis.net/configreference/system.applicationhost/applicationpools/add/processmodel
-#$appPool.processModel.identityType = 0 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
-#$appPool.processModel.userName = "LocalSystem"
-#$appPool.processModel.password = ""
-
-$appPool.processModel.identityType = 3 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3 :SpecificUser, 4: ApplicationPoolIdentity
-$appPool.processModel.userName = $IISServiceAccountUsername 
-$appPool.processModel.password = $IISServiceAccountPassword 
+$AppPool.processModel.identityType = 3 # 0: LocalSystem, 1: localservice, 2: NetworkService, 3: SpecificUser, 4: ApplicationPoolIdentity
+$AppPool.processModel.userName = $IISServiceAccountUsername 
+$AppPool.processModel.password = $IISServiceAccountPassword 
 
 $appPool | Set-Item
 
-
-$website = New-Website -Name $fqdn `
-                       -PhysicalPath $webRoot `
-                       -ApplicationPool ($appPool.Name) `
-                       -HostHeader $fqdn
+Write-Host "Setting up www.lab.local..."
+$WebSite = New-Website -Name $Fqdn `
+                       -PhysicalPath $WebRoot `
+                       -ApplicationPool ($AppPool.Name) `
+                       -HostHeader $Fqdn
                        
-"Hello World!" | Out-File "$webRoot\index.html"
+"Hello World!" | Out-File "$WebRoot\index.html"
 
 Set-WebConfigurationProperty -Filter /system.WebServer/security/authentication/anonymousAuthentication `
-    -Name enabled -Value $false -Location $fqdn
+    -Name enabled -Value $false -Location $Fqdn
 Set-WebConfigurationProperty -Filter /system.WebServer/security/authentication/windowsAuthentication `
-    -Name enabled -Value $true -Location $fqdn
+    -Name enabled -Value $true -Location $Fqdn
 Set-WebConfigurationProperty -Filter /system.webServer/security/authentication/windowsAuthentication `
-    -Name useAppPoolCredentials -Value $true -Location $fqdn            
-            
-setspn -S http/$fqdn $IISServiceAccountUsername
+    -Name useAppPoolCredentials -Value $true -Location $Fqdn            

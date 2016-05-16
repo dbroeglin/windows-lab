@@ -1,56 +1,57 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$BASE_BOX = "eval-win2012r2-standard-nocm-1.0.4"
-#$BASE_BOX = "eval-win10x64-enterprise-ssh-nocm-1.0.4"
+$NET_PREFIX       = "192.168.59"
+$DC_IP            = "#{$NET_PREFIX}.50"
+$IIS_IP           = "#{$NET_PREFIX}.51"
+$CLIENT_IP        = "#{$NET_PREFIX}.52"
+$LAB_NET_PATTERN  = "#{$NET_PREFIX}.*"
+$BASE_BOX         = "eval-win2012r2-standard-nocm-1.0.4"
+
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
-#    vb.gui = false
+#     vb.gui = false
+#     vb.customize ["modifyvm", :id, "--memory", "1024"]
      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
-     #vb.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
   config.vm.define "dc01" do |config|
     config.vm.box = $BASE_BOX
     config.vm.hostname = 'dc01'
 
-    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.50"
+    config.vm.network "private_network", ip: $DC_IP 
 
-    config.vm.provision "shell", path: "provision/00_common.ps1"
+    config.vm.provision "shell", path: "provision/00_common.ps1", \
+        args: [$LAB_NET_PATTERN]
     config.vm.provision "shell", path: "provision/01_install_AD.ps1"
     config.vm.provision "shell", path: "provision/02_install_forest.ps1"
-    config.vm.provision "shell", path: "provision/03_populate_AD.ps1"
-    config.vm.provision "shell", path: "provision/03_populate_AD2.ps1"
-    config.vm.provision "shell", path: "provision/04_install_adfs.ps1"
-
-    config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
+    config.vm.provision "shell", path: "provision/03_populate_AD.ps1", \
+        args: [$IIS_IP]
   end
 
   config.vm.define "web01" do |config|
     config.vm.box = $BASE_BOX
     config.vm.hostname = 'web01'
 
-    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.51"
+    config.vm.network "private_network", ip: $IIS_IP 
     
-    config.vm.provision "shell", path: "provision/00_common.ps1"
+    config.vm.provision "shell", path: "provision/00_common.ps1", \
+        args: [$LAB_NET_PATTERN]
     config.vm.provision "shell", path: "provision/06_join_domain.ps1", \
-        args: ["172.16.124.*", "172.16.124.50"]
+        args: [$LAB_NET_PATTERN, $DC_IP]
     config.vm.provision "shell", path: "provision/07_install_iis.ps1"
-
-    config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
   end
 
   config.vm.define "client01" do |config|
     config.vm.box = $BASE_BOX
     config.vm.hostname = 'client01'
 
-    config.vm.network "public_network", bridge: "vmnet1", ip: "172.16.124.52"
+    config.vm.network "private_network", ip: $CLIENT_IP
     
-    config.vm.provision "shell", path: "provision/00_common.ps1"
+    config.vm.provision "shell", path: "provision/00_common.ps1", \
+        args: [$LAB_NET_PATTERN]
     config.vm.provision "shell", path: "provision/06_join_domain.ps1", \
-        args: ["172.16.124.*", "172.16.124.50"]
+        args: [$LAB_NET_PATTERN, $DC_IP]
     config.vm.provision "shell", path: "provision/08_client.ps1"
-
-    config.vm.synced_folder "/Volumes/EXT/Downloads", "/downloads"
   end
 end

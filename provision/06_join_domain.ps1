@@ -1,22 +1,23 @@
 Param(
     $LabIPAddressPattern,
-    $DNSServerIP,
+    $DCIPAddress,
     $Domain = "lab.local"
 )
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"
 
-# Rename Lab Interface
+Write-Host "Renaming lab interface to 'Lab'..."
 Get-NetAdapter -InterfaceIndex (Get-NetIPAddress -IPAddress $LabIPAddressPattern).InterfaceIndex | 
     Rename-NetAdapter -NewName Lab
 
-# Ensure we use only the DNS server at $DNSServerIP
+Write-Host "Setting DNS server to $DCIPAddress..."
 Set-DnsClientServerAddress -InterfaceIndex (
         (Get-NetIPAddress).InterfaceIndex
-    ) -ServerAddress $DNSServerIP
+    ) -ServerAddress $DCIPAddress
 
- Set-DnsClientGlobalSetting -SuffixSearchList $Domain 
+Set-DnsClientGlobalSetting -SuffixSearchList $Domain 
 
+Write-Host "Joining domain..."
 $Password = "Passw0rd" | ConvertTo-SecureString -asPlainText -Force
 $Username = "Administrator" 
 $Credential = New-Object PSCredential($Username, $Password)
