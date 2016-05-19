@@ -1,7 +1,6 @@
 Param(
-    $VagrantIPPattern    = "10.0.*",
-    $LabIPAddressPattern = "172.16.124.*"
-    
+    $LabIPAddressPattern = "172.16.124.*",
+    $VagrantIPPattern    = "10.0.*"
 )
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"

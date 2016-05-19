@@ -1,7 +1,8 @@
+Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+Write-Host "Adding lab.local to the 'Local Site' zone..."
 # Sets registry keys so that all users have http://*.lab.local as a "Local Site" in Internet Explorer"
-
 $InternetSettings = 'HKLM:Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings'
 $Domains          = "$InternetSettings\ZoneMap\Domains" 
 $Domain           = "$Domains\lab.local"

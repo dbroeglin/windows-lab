@@ -15,4 +15,4 @@ Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name www -IPv4Address 172
 Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name aaa -IPv4Address 172.16.124.13
 
 # ADFS name
-Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name sts -IPv4Address 172.16.124.51 # dc01 for now
+Add-DnsServerResourceRecord -ZoneName extlab.local -A -Name adfs -IPv4Address 172.16.124.50 # dc01 for now

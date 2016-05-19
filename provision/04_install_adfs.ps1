@@ -1,6 +1,6 @@
 Param (
     [String]$ADFSdisplayName = "LAB ADFS",
-    [String]$CertificateADFSsubject = "sts.extlab.local",
+    [String]$CertificateADFSsubject = "adfs.extlab.local",
     [String]$CertificatePassword = "Passw0rd",
     [String]$AdminUserName        = "LAB\vagrant",
     [String]$AdminUserPassword    = "vagrant",

@@ -1,6 +1,3 @@
-Param(
-    $IPAddress  = "172.16.124.50"
-)
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"
 
@@ -15,5 +12,5 @@ Add-WindowsFeature -Name "dns" -IncludeAllSubFeature -IncludeManagementTools
 Add-WindowsFeature -Name "gpmc" -IncludeAllSubFeature -IncludeManagementTools 
 
 # Force the DNS server to bind to $IPAddress
-dnscmd dc01 /ResetListenAddresses $IPAddress
+dnscmd dc01 /ResetListenAddresses ((Get-NetIPAddress -InterfaceAlias Lab -AddressFamily IPv4).IPAddress) 
 
