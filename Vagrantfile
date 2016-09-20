@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$BASE_BOX = "eval-win2012r2-standard-ssh-nocm-1.0.4"
+$BASE_BOX = "eval-win2012r2-standard-nocm-1.0.4"
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
 #    vb.gui = false
