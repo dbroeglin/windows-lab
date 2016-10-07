@@ -6,6 +6,7 @@ Write-Host "Adding lab.local to the 'Local Site' zone..."
 $InternetSettings = 'HKLM:Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings'
 $Domains          = "$InternetSettings\ZoneMap\Domains" 
 $Domain           = "$Domains\lab.local"
+$LogDir           = "c:\vagrant\logs\"
 
 mkdir -Force $Domains
 Set-ItemProperty -Path $InternetSettings -Name Security_HKLM_only -Value 1 -Type DWORD
@@ -21,4 +22,4 @@ Import-PfxCertificate c:\vagrant\test\aaa.extlab.local.pfx `
     -CertStoreLocation Cert:\LocalMachine\Root `
     -Password (ConvertTo-SecureString -AsPlainText -String "Passw0rd" -Force)
 
-msiexec.exe /i "c:\downloads\googlechromestandaloneenterprise.msi" NOGOOGLEUPDATEPING=1 /l*v c:\vagrant\test\chrome_install.log /q /norestart  
+msiexec.exe /i "c:\downloads\googlechromestandaloneenterprise.msi" NOGOOGLEUPDATEPING=1 /l*v $LogDir\chrome_install.log /q /norestart  

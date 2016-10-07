@@ -12,5 +12,4 @@ Add-WindowsFeature -Name "dns" -IncludeAllSubFeature -IncludeManagementTools
 Add-WindowsFeature -Name "gpmc" -IncludeAllSubFeature -IncludeManagementTools 
 
 # Force the DNS server to bind to $IPAddress
-dnscmd dc01 /ResetListenAddresses ((Get-NetIPAddress -InterfaceAlias Lab -AddressFamily IPv4).IPAddress) 
-
+dnscmd $env:COMPUTERNAME /ResetListenAddresses ((Get-NetIPAddress -InterfaceAlias Lab -AddressFamily IPv4).IPAddress) 

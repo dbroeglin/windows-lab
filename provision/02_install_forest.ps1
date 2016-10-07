@@ -1,21 +1,33 @@
 Param(
     $DomainName                    = "lab.local",
     $NetbiosName                   = "LAB",
-    $SafeModeAdministratorPassword = "Password1"
+    $SafeModeAdministratorPassword = "Password1",
+    $MarkerFilename                = "$emv:TEMP\ADDS-FOREST.mark"
 )
 Set-StrictMode -Version Latest 
 $ErrorActionPreference = "Stop"
 
-Import-Module ADDSDeployment 
-Install-ADDSForest -CreateDnsDelegation:$false `
+if (Test-Path $MarkerFilename) {
+    Write-Host "We re-entered ADDS Forest installation! Exiting..."
+    return
+}
+
+Import-Module ADDSDeployment
+
+Write-Host "Starting ADDS Forest installation..." 
+Install-ADDSForest `
     -DatabasePath "C:\Windows\NTDS" `
-    -DomainMode "Win2012" `
+    -DomainMode "Win2012R2" `
     -DomainName $DomainName `
     -DomainNetbiosName $NetbiosName `
-    -ForestMode "Win2012" `
-    -InstallDns:$true `
+    -ForestMode "Win2012R2" `
+    -InstallDns `
     -LogPath "C:\Windows\NTDS" `
-    -NoRebootOnCompletion:$false `
     -SysvolPath "C:\Windows\SYSVOL" `
     -safemodeadministratorpassword (ConvertTo-SecureString $SafeModeAdministratorPassword -asplaintext -force) `
-    -Force:$true
+    -Force
+
+"Done" | Out-File $MarkerFilename
+
+Write-Host "Start sleeping until reboot to prevent vagrant connection failures..."
+Start-Sleep 180
