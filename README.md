@@ -44,3 +44,26 @@ VM, open a PowerShell console and execute the following command:
     C:\Sysinternals\psexec -accepteula -u LAB\Alice -p Passw0rd "C:\Program Files\Internet Explorer\iexplore" http://www.lab.local/
 
 If everything went according to plan you should see `Hello World!` in the browser.
+
+# Annex
+
+I also use the lab for NetScaler configuration testing. In which case I would launch NetScaler in VMWare Fusion (hence the bridge with `vmnet1`):
+
+
+                                +------+
+                                |      |
+                                | ns01 |
+                                |      |
+                                +--+---+
+                                    |
+                           NSIP .10 | .11 SNIP
+    172.16.124.0/24                 | .12 VIP
+    +-------+---------+------------++-----------+---------+
+        .50 |     .51 |        .52 |        .53 |
+            |         |            |            |
+            |         |            |            |
+        +---+--+  +---+---+  +-----+----+  +----+---+
+        |      |  |       |  |          |  |        |
+        | dc01 |  | web01 |  | client01 |  | adfs01 |
+        |      |  |       |  |          |  |        |
+        +------+  +-------+  +----------+  +--------+
