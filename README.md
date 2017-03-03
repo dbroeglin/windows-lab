@@ -67,3 +67,5 @@ I also use the lab for NetScaler configuration testing. In which case I would la
         | dc01 |  | web01 |  | client01 |  | adfs01 |
         |      |  |       |  |          |  |        |
         +------+  +-------+  +----------+  +--------+
+
+To test NetScaler authentication: ensure the lab was created with variable environment `WITH_NETSCALER` set to `true` or execute provisioning files `03_populate_AD2.ps1` in `DC01` and `05_populate_adfs.ps1` in `ADFS01`.
