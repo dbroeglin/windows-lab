@@ -33,4 +33,4 @@ $AuthRule = '=> issue(Type = "http://schemas.microsoft.com/authorization/claims/
 $RuleSet = New-ADFSClaimRuleSet -ClaimRule $AuthRule
 Set-ADFSRelyingPartyTrust -TargetName Netscaler -IssuanceAuthorizationRules $RuleSet.ClaimRulesString
 
-Set-ADFSRelyingPartyTrust -TargetName Netscaler –NotBeforeSkew 2
+Set-ADFSRelyingPartyTrust -TargetName Netscaler -NotBeforeSkew 2
