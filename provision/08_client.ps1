@@ -1,5 +1,5 @@
 Param(
-    [String]$CertificateDirectory   = "c:\vagrant\certs",
+    [String]$CertificateDirectory   = "c:\vagrant\certs"
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
