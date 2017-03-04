@@ -1,7 +1,7 @@
 Param (
     [String]$CertificateSubject     = "aaa.extlab.local",
     [String]$Fqdn                   = "www.extlab.local",
-    [String]$CertificateDirectory   = "c:\vagrant\tmp",
+    [String]$CertificateDirectory   = "c:\vagrant\certs",
     [String]$CertificatePassword    = "Passw0rd"
 )
 Import-PfxCertificate $CertificateDirectory\$CertificateSubject.pfx `

@@ -45,7 +45,7 @@ VM, open a PowerShell console and execute the following command:
 
 If everything went according to plan you should see `Hello World!` in the browser.
 
-# Annex
+# Annex 1: Netscaler Setup
 
 I also use the lab for NetScaler configuration testing. In which case I would launch NetScaler in VMWare Fusion (hence the bridge with `vmnet1`):
 
@@ -69,3 +69,9 @@ I also use the lab for NetScaler configuration testing. In which case I would la
         +------+  +-------+  +----------+  +--------+
 
 To test NetScaler authentication: ensure the lab was created with variable environment `WITH_NETSCALER` set to `true` or execute provisioning files `03_populate_AD2.ps1` in `DC01` and `05_populate_adfs.ps1` in `ADFS01`.
+
+# Annex 2: Certificate generation
+
+We use auto-signed SSL certificates in the lab. They are stored in the `certs` directory and where generated with the code present in `Contrib\New-TestCertificates.ps1`.
+
+The _ADFS Token Signing_ certificate is generated during ADFS installation and stored in the `tmp` directory. The certificate is then reused by the NetScaler configuration script. This directory's content is not committed to source control because each ADFS installation will be different.

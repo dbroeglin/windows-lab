@@ -1,3 +1,6 @@
+Param(
+    [String]$CertificateDirectory   = "c:\vagrant\certs",
+)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
@@ -18,7 +21,7 @@ Set-ItemProperty -Path $Domain -Name http  -Value 1 -Type DWord
 Set-ItemProperty -Path $Domain -Name https -Value 1 -Type DWord
 
 # Trust the aaa.extlab.local certiciate used by Netscaler
-Import-PfxCertificate c:\vagrant\test\aaa.extlab.local.pfx `
+Import-PfxCertificate $CertificateDirectory\aaa.extlab.local.pfx `
     -CertStoreLocation Cert:\LocalMachine\Root `
     -Password (ConvertTo-SecureString -AsPlainText -String "Passw0rd" -Force)
 
