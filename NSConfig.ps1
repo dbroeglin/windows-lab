@@ -10,7 +10,7 @@ Param(
     $Password           = "nsroot",
     $License            = "licenses/ns01.lic",
 
-    $DnsServerIp        = "172.16.124.50",
+    $DCServerIp         = "172.16.124.50",
 
     $CertificatesDir    = "certs",
     $TmpCertificatesDir = "tmp"
@@ -67,6 +67,10 @@ if ($Reset) {
         Select-Object -ExpandProperty filename |
         ForEach-Object { Write-Verbose "Removing license file $_..."; $_ } |
         Remove-NSSystemFile -FileLocation /nsconfig/license
+    Get-NSSystemFile -FileLocation /var/krb |
+        Select-Object -ExpandProperty filename |
+        ForEach-Object { Write-Verbose "Removing KRB file $_..."; $_ } |
+        Remove-NSSystemFile -FileLocation /var/krb
 
     Save-NSConfig
     return
@@ -135,7 +139,7 @@ Enable-NSFeature -Session $Session -Force -Name "aaa", "lb", "rewrite", "ssl"
 
 # This does not work (resolution does not work when using the LB)
 #Write-Host "Setting up DNS LB..."
-#New-NSLBServer -Name srv-dc01 -IPAddress $DnsServerIp
+#New-NSLBServer -Name srv-dc01 -IPAddress $DCServerIp
 #New-NSLBServiceGroupMember -Name svg-dns -ServerName srv-dc01
 #New-NSLBServiceGroup -Name svg-dns -Protocol DNS
 #New-NSLBVirtualServer -Name vsrv-dns -ServiceType DNS
@@ -143,7 +147,13 @@ Enable-NSFeature -Session $Session -Force -Name "aaa", "lb", "rewrite", "ssl"
 #Add-NSDnsNameServer -DNSVServerName vsrv-dns
 
 Write-Host "Setting up DNS..."
-Add-NSDnsNameServer -IPAddress $DnsServerIp
+Add-NSDnsNameServer -IPAddress $DCServerIp
+
+Write-Host "Setting up NTP server..."
+if (-not (Get-NSNTPServer -Server $DCServerIp)) {
+    New-NSNTPServer -Server $DCServerIp
+}
+Invoke-Nitro -type ntpsync -Method POST -Action enable -Force
 
 Write-Host "Uploading certificates..."
 "aaa.extlab.local", "adfs.extlab.local" | ForEach-Object {
