@@ -45,7 +45,9 @@ VM, open a PowerShell console and execute the following command:
 
 If everything went according to plan you should see `Hello World!` in the browser.
 
-# Annex 1: Netscaler Setup
+# Annex 1: NetScaler Setup
+
+## Lab setup for NetScaler testing
 
 I also use the lab for NetScaler configuration testing. In which case I would launch NetScaler in VMWare Fusion (hence the bridge with `vmnet1`):
 
@@ -69,6 +71,33 @@ I also use the lab for NetScaler configuration testing. In which case I would la
         +------+  +-------+  +----------+  +--------+
 
 To test NetScaler authentication: ensure the lab was created with variable environment `WITH_NETSCALER` set to `true` or execute provisioning files `03_populate_AD2.ps1` in `DC01` and `05_populate_adfs.ps1` in `ADFS01`.
+
+## NetScaler configuration
+
+After provisioning a NetScaler instance place a license file in the `licenses` directory (by default the script uses `ns01.lic`)
+
+To connect to the NetScaler instance:
+
+    ./NSConfig.ps1 -Connect
+
+This command will completely reset your NetScaler instance to prepare it for a new configuration:
+
+    ./NSConfig.ps1 -Reset
+    ./NSConfig.ps1 -Bootstrap
+
+Finally deploying the configuration is done with:
+
+    ./NSConfig.ps1 -Verbose
+
+If you do not require a full instance reset (with certificate file and license cleanup), you can use:
+
+    Clear-NSConfig -Level Full -Force; ./NSConfig.ps1 -Verbose
+
+Those two commands allow for a faster feedback loop when working on the NetScaler configuration.
+
+## NetScaler configuration testing
+
+To test the NetScaler configuration, just enter [https://www.extlab.local][https://www.extlab.local] into a browser in the `client01` host.
 
 # Annex 2: Certificate generation
 
