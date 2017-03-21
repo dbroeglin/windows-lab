@@ -11,7 +11,7 @@ $IIS_IP           = "#{$NET_PREFIX}.51"
 $CLIENT_IP        = "#{$NET_PREFIX}.52"
 $ADFS_IP          = "#{$NET_PREFIX}.53"
 $LAB_NET_PATTERN  = "#{$NET_PREFIX}.*"
-$BASE_BOX         = "eval-win2012r2-standard-nocm-1.0.4"
+$BASE_BOX         = "windows2012r2min-wmf5-virtualbox"
 
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
