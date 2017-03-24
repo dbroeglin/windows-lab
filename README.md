@@ -104,3 +104,19 @@ To test the NetScaler configuration, just enter [https://www.extlab.local][https
 We use auto-signed SSL certificates in the lab. They are stored in the `certs` directory and where generated with the code present in `Contrib\New-TestCertificates.ps1`.
 
 The _ADFS Token Signing_ certificate is generated during ADFS installation and stored in the `tmp` directory. The certificate is then reused by the NetScaler configuration script. This directory's content is not committed to source control because each ADFS installation will be different.
+
+# Annex 3: Generating the lab's Windows base box
+
+Vagrant uses _base boxes_ to build virtual machines. To build the _base box_ for this lab you will need to install [Packer][https://www.packer.io/] and :
+
+    git clone https://github.com/dbroeglin/packer-templates.git
+    cd packer-templates
+    packer build -force -only virtualbox-iso vbox-2012r2-wmf5.json
+
+Once the _base box_ is built, import it with the following command:
+
+    vagrant box add --name windows2012r2min-wmf5-virtualbox windows2012r2min-wmf5-virtualbox.box
+
+You should be ready to go. 
+
+Before running packer, you might want to customize the build to your preferences. For instance, the keyboard layout can be changed here: https://github.com/dbroeglin/packer-templates/blob/master/scripts/postunattend.xml#L14
