@@ -2,15 +2,17 @@
 # vi: set ft=ruby :
 
 $NET_PREFIX       = "172.16.124"
-$BRIDGE_IF        = "vmnet1"
-$DOWNLOADS_DIR    = "/Volumes/EXT/Downloads"
+$BRIDGE_IF        = ENV['BRIDGE_IF'] || "vmnet1"
+$DOWNLOADS_DIR    = ENV['DOWNLOADS_DIR'] || "/Volumes/EXT/Downloads"
+$BASE_BOX         = ENV['BASE_BOX'] || "eval-win2012r2-standard-nocm-1.0.4"
 
 $DC_IP            = "#{$NET_PREFIX}.50"
 $IIS_IP           = "#{$NET_PREFIX}.51"
 $CLIENT_IP        = "#{$NET_PREFIX}.52"
 $ADFS_IP          = "#{$NET_PREFIX}.53"
 $LAB_NET_PATTERN  = "#{$NET_PREFIX}.*"
-$BASE_BOX         = "eval-win2012r2-standard-nocm-1.0.4"
+
+
 
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
