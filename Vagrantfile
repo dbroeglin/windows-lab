@@ -4,15 +4,14 @@
 $NET_PREFIX       = "172.16.124"
 $BRIDGE_IF        = ENV['BRIDGE_IF'] || "vmnet1"
 $DOWNLOADS_DIR    = ENV['DOWNLOADS_DIR'] || "/Volumes/EXT/Downloads"
-$BASE_BOX         = ENV['BASE_BOX'] || "eval-win2012r2-standard-nocm-1.0.4"
+$BASE_BOX         = ENV['BASE_BOX'] || "windows2012r2min-wmf5-virtualbox"
+$WITH_NETSCALER   = ENV['WITH_NETSCALER'] == 'true'
 
 $DC_IP            = "#{$NET_PREFIX}.50"
 $IIS_IP           = "#{$NET_PREFIX}.51"
 $CLIENT_IP        = "#{$NET_PREFIX}.52"
 $ADFS_IP          = "#{$NET_PREFIX}.53"
 $LAB_NET_PATTERN  = "#{$NET_PREFIX}.*"
-
-
 
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
@@ -33,6 +32,8 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", path: "provision/02_install_forest.ps1"
     config.vm.provision "shell", path: "provision/03_populate_AD.ps1", \
         args: [$IIS_IP]
+    config.vm.provision "shell", path: "provision/03_populate_AD2.ps1" if $WITH_NETSCALER
+        
 
     config.vm.synced_folder $DOWNLOADS_DIR, "/downloads"
   end
@@ -78,6 +79,7 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", path: "provision/06_join_domain.ps1", \
         args: [$LAB_NET_PATTERN, $DC_IP]
     config.vm.provision "shell", path: "provision/04_install_adfs.ps1"
+    config.vm.provision "shell", path: "provision/05_populate_adfs.ps1" if $WITH_NETSCALER
 
     config.vm.synced_folder $DOWNLOADS_DIR, "/downloads"
   end

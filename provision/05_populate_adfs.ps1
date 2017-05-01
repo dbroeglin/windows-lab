@@ -1,7 +1,7 @@
 Param (
     [String]$CertificateSubject     = "aaa.extlab.local",
     [String]$Fqdn                   = "www.extlab.local",
-    [String]$CertificateDirectory   = "c:\vagrant\tmp",
+    [String]$CertificateDirectory   = "c:\vagrant\certs",
     [String]$CertificatePassword    = "Passw0rd"
 )
 Import-PfxCertificate $CertificateDirectory\$CertificateSubject.pfx `
@@ -33,3 +33,4 @@ $AuthRule = '=> issue(Type = "http://schemas.microsoft.com/authorization/claims/
 $RuleSet = New-ADFSClaimRuleSet -ClaimRule $AuthRule
 Set-ADFSRelyingPartyTrust -TargetName Netscaler -IssuanceAuthorizationRules $RuleSet.ClaimRulesString
 
+Set-ADFSRelyingPartyTrust -TargetName Netscaler -NotBeforeSkew 2

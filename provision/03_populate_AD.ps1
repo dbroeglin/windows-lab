@@ -42,7 +42,7 @@ Write-Host "Creating Netscaler Account..."
 $User = New-ADUser -Name "Netscaler Service Account" `
      -SamAccountName ns_svc -UserPrincipalName ns_svc@lab.local `
      -AccountPassword (convertto-securestring "Passw0rd" -asplaintext -force) `
-     -ServicePrincipalNames host/nsdbg `
+     -ServicePrincipalNames host/nsdbg ` # Must be set for KCD to work
      -PasswordNeverExpires $True `
      -PassThru
 

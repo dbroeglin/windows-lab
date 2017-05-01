@@ -1,6 +1,7 @@
 $password = ConvertTo-SecureString -String "Passw0rd" -Force -AsPlainText
+$CertificateDir = "c:\vagrant\certs"
 
-Mkdir c:\vagrant\test\ -Force
+Mkdir $CertificateDir -Force
 
 "aaa.extlab.local", "www.extlab.local" | ForEach {
     $Fqdn = $_
@@ -10,12 +11,16 @@ Mkdir c:\vagrant\test\ -Force
     Start-Sleep 1
 
     dir Cert:\LocalMachine\My | ? { $_.Subject -match $Fqdn } |
-        Export-PfxCertificate -FilePath c:\vagrant\test\$Fqdn.pfx -Password $password    
+        Export-PfxCertificate -FilePath $CertificateDir\$Fqdn.pfx -Password $password    
 }
 
 return 
 
-# Works only on W2016:
+# The following code works only on W2016 (PS v5 ?):
+
+$password = ConvertTo-SecureString -String "Passw0rd" -Force -AsPlainText
+dir Cert:\LocalMachine\My | ? { $_.Subject -match "adfs.extlab.local" } | Remove-Item
+
 New-SelfSignedCertificate -certstorelocation cert:\localmachine\my `
         -dnsname adfs.extlab.local -KeySpec KeyExchange 
 

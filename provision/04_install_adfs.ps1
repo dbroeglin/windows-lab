@@ -1,12 +1,13 @@
 Param (
-    [String]$ADFSdisplayName        = "LAB ADFS",
-    [String]$CertificateDirectory   = "c:\vagrant\tmp",
-    [String]$CertificateADFSsubject = "adfs.extlab.local",
-    [String]$CertificatePassword    = "Passw0rd",
-    [String]$AdminUserName          = "LAB\vagrant",
-    [String]$AdminUserPassword      = "vagrant",
-    [String]$ADFSUserName           = "LAB\adfs_svc",
-    [String]$ADFSUserPassword       = "Passw0rd"
+    [String]$ADFSdisplayName         = "LAB ADFS",
+    [String]$CertificateDirectory    = "c:\vagrant\certs",
+    [String]$TmpCertificateDirectory = "c:\vagrant\tmp",
+    [String]$CertificateADFSsubject  = "adfs.extlab.local",
+    [String]$CertificatePassword     = "Passw0rd",
+    [String]$AdminUserName           = "LAB\vagrant",
+    [String]$AdminUserPassword       = "vagrant",
+    [String]$ADFSUserName            = "LAB\adfs_svc",
+    [String]$ADFSUserPassword        = "Passw0rd"
 )
  
 Set-StrictMode -Version Latest 
@@ -35,7 +36,8 @@ Install-AdfsFarm -CertificateThumbprint $CertificateThumbprint `
         (ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force)))
 
 
-Write-Host "Exporting ADFS Token Signing Certificate..."
+$TokenSigningCertificatePath = "$TmpCertificateDirectory\adfs_token_signing.cer"
+Write-Host "Exporting ADFS Token Signing Certificate  to '$TokenSigningCertificatePath'..."
 $Cert=Get-AdfsCertificate -CertificateType Token-Signing
 $CertBytes=$Cert[0].Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
-[System.IO.File]::WriteAllBytes("$CertificateDirectory\adfs_token_signing.cer", $certBytes)
+[System.IO.File]::WriteAllBytes($TokenSigningCertificatePath, $certBytes)
