@@ -39,10 +39,11 @@ Add-DnsServerResourceRecord -ZoneName lab.local -A -Name www -IPv4Address $IISIP
 # Netscaler KCD service account
 # Note: the account's SPN is not meaningful, it just allows us to activate delegation
 Write-Host "Creating Netscaler Account..."
+# 'ServicePrincipalNames' must be set for KCD to work
 $User = New-ADUser -Name "Netscaler Service Account" `
      -SamAccountName ns_svc -UserPrincipalName ns_svc@lab.local `
      -AccountPassword (convertto-securestring "Passw0rd" -asplaintext -force) `
-     -ServicePrincipalNames host/nsdbg ` # Must be set for KCD to work
+     -ServicePrincipalNames host/nsdbg `
      -PasswordNeverExpires $True `
      -PassThru
 
