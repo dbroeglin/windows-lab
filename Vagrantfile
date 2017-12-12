@@ -14,6 +14,9 @@ $ADFS_IP          = "#{$NET_PREFIX}.53"
 $LAB_NET_PATTERN  = "#{$NET_PREFIX}.*"
 
 Vagrant.configure(2) do |config|
+  config.winrm.transport = :plaintext
+  config.winrm.basic_auth_only = true
+
   config.vm.provider "virtualbox" do |vb|
 #     vb.gui = false
 #     vb.customize ["modifyvm", :id, "--memory", "1024"]
