@@ -113,6 +113,8 @@ Vagrant uses _base boxes_ to build virtual machines. To build the _base box_ for
     cd packer-templates
     packer build -force -only virtualbox-iso vbox-2012r2-wmf5.json
 
+Note: The `packer build` command can take many hours to run. In particular, it can appear to be stuck on the message `Waiting for WinRM to become available`, and also just after the message `Deployment Image Servicing and Management tool`.
+
 Once the _base box_ is built, import it with the following command:
 
     vagrant box add --name windows2012r2min-wmf5-virtualbox windows2012r2min-wmf5-virtualbox.box
