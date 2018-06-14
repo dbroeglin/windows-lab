@@ -33,8 +33,10 @@ Before you run `vagrant up` edit the `Vagrantfile` to adapt those variables:
 The network prefix should be adapted to whatever network you bridge too (make
 sure the IPs 50 to 53 are free or change them as well in the file). All VMs
 are bridge to the same interface. In my case the VMWare network that hosts my
-virtual Netscaler instance. The download dir should contain `googlechromestandaloneenterprise.msi`
-which can be downloaded from here: https://www.google.com/work/chrome/chrome-browser/
+virtual Netscaler instance.
+
+The download dir should contain `googlechromestandaloneenterprise.msi`
+which can be downloaded from here: https://www.google.com/work/chrome/chrome-browser/, as well as the SysInternals Suite as a single ZIP file, which can be downloaded from here: https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite.
 
 # Tests
 
